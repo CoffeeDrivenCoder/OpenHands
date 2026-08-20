@@ -369,7 +369,7 @@ describe("recommended automations", () => {
     }
   });
 
-  it("keeps a non-MCP-installable integration visible on its card instead of dropping it", () => {
+  it("shows the canonical Atlassian Rovo integration on the Jira card", () => {
     // SkillCardPillRow folds pills behind "+N more" when it measures zero
     // widths in jsdom; give it room so every pill renders.
     const offsetWidthDescriptor = Object.getOwnPropertyDescriptor(
@@ -408,24 +408,20 @@ describe("recommended automations", () => {
         />,
       );
 
-      // jira-issue-to-pr declares jira (HTTP-only catalog entry) and github
-      // (MCP). Both belong on the card; jira is labeled as external setup.
+      // Jira is provided through the hosted Atlassian Rovo MCP integration,
+      // while GitHub remains a separately installable dependency.
       const pillRow = screen.getByTestId(
         "recommended-automation-pills-jira-issue-to-pr",
       );
-      expect(pillRow).toHaveTextContent("Jira");
+      expect(pillRow).toHaveTextContent("Atlassian Rovo");
       expect(pillRow).toHaveTextContent("GitHub");
       expect(
-        within(pillRow).getByTestId("automation-integration-external-jira"),
-      ).toHaveTextContent("RECOMMENDED_AUTOMATIONS$EXTERNAL_SETUP");
-      expect(
-        within(pillRow).queryByTestId("automation-integration-external-github"),
+        within(pillRow).queryByTestId(
+          "automation-integration-external-atlassian-rovo",
+        ),
       ).not.toBeInTheDocument();
-
-      // The connect-before-launch count only covers what the install flow can
-      // actually connect, so jira does not inflate it.
       expect(pillRow).toHaveTextContent(
-        "RECOMMENDED_AUTOMATIONS$MISSING_CONNECT:1",
+        "RECOMMENDED_AUTOMATIONS$MISSING_CONNECT:2",
       );
     } finally {
       if (offsetWidthDescriptor) {
@@ -442,7 +438,7 @@ describe("recommended automations", () => {
     }
   });
 
-  it("finds an automation by searching for its non-MCP-installable integration", () => {
+  it("finds an automation by searching for its Rovo integration", () => {
     render(
       <RecommendedAutomationsSection
         backendKind="local"
@@ -496,17 +492,15 @@ describe("recommended automations", () => {
     }
   });
 
-  it("queues installs only for MCP-installable required integrations", async () => {
+  it("queues installs for both Rovo and GitHub dependencies", async () => {
     renderLauncher();
 
     fireEvent.click(
       screen.getByTestId("recommended-automation-card-jira-issue-to-pr"),
     );
 
-    // jira cannot go through the local MCP install flow, so the queue starts
-    // directly at github rather than failing or skipping the automation.
     const modal = await screen.findByTestId("mcp-install-modal");
-    expect(modal).toHaveAttribute("data-marketplace-id", "github");
+    expect(modal).toHaveAttribute("data-marketplace-id", "atlassian-rovo");
     expect(mockCreateConversationMutate).not.toHaveBeenCalled();
   });
 

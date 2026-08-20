@@ -46,10 +46,10 @@ interface RecommendedAutomationsLauncherProps {
  * willing to start without is deliberately absent, so it never queues an
  * install modal the user has to dismiss.
  *
- * A required integration this backend cannot install as MCP (e.g. Jira's
- * HTTP-only option) is also excluded here — the install queue can't do
- * anything with it — but it is not silently dropped from the product: the
- * automation card keeps it visible and labels it as needing external setup.
+ * A required integration this backend cannot install as MCP is also excluded
+ * here — the install queue can't do anything with it — but it is not silently
+ * dropped from the product: the automation card keeps it visible and labels it
+ * as needing external setup.
  */
 function getRequiredEntries(automation: RecommendedAutomation) {
   return getRequiredIntegrationIds(automation)

@@ -79,9 +79,9 @@ export interface AutomationIntegration {
  * Every integration the automation declares, including the ones it is willing
  * to start without: the card describes what the automation uses, so an
  * optional integration still belongs on it. Entries are resolved against the
- * full catalog — an integration this backend cannot install as MCP (e.g.
- * Jira's HTTP-only option) is still a declared dependency and must stay
- * visible rather than being silently dropped. Unknown IDs are represented as
+ * full catalog — an integration this backend cannot install as MCP is still a
+ * declared dependency and must stay visible rather than being silently dropped.
+ * Unknown IDs are represented as
  * unresolved entries so catalog drift is visible to the user as well.
  */
 function getIntegrationEntries(

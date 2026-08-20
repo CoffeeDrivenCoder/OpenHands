@@ -1,9 +1,19 @@
 import { describe, expect, it } from "vitest";
 import { AUTOMATION_CATALOG } from "@openhands/extensions/automations";
-import { getAutomationLaunchPrompt } from "#/utils/automation-catalog";
+import {
+  getAutomationLaunchPrompt,
+  getIntegrationIds,
+} from "#/utils/automation-catalog";
 
 const automationById = (id: string) =>
   AUTOMATION_CATALOG.find((automation) => automation.id === id)!;
+
+it("uses the canonical Atlassian Rovo dependency from the manifest", () => {
+  expect(getIntegrationIds(automationById("jira-issue-to-pr"))).toEqual([
+    "atlassian-rovo",
+    "github",
+  ]);
+});
 
 describe("getAutomationLaunchPrompt", () => {
   it("resolves the command from the skill that implements the automation", () => {
